@@ -2,12 +2,13 @@ mod wfd-preds is
   protecting wfd .
   including SATISFACTION .
   subsort Config < State .
+  op inData : Data Set{Data} -> Prop .
   ops final finalAny availableData : Set{Data} -> Prop .
   ops  predTrans  enabledTrans : Transitions -> Prop .
   op concurrentlyFireable : Transitions Transitions -> Prop .
   ops written read deleted : Data -> Prop .
   op consistent : -> Prop .
-  op inData : Data Set{Data} -> Prop .
+  
   
   vars M M' M'' : Marking .
   vars DS DS' : Set{Data} .
@@ -27,7 +28,7 @@ mod wfd-preds is
   --- final configuration with optional data elements
   ceq < o , DS' , PVS , DO > |= finalAny(DS) = true if not intersection(DS,DS') == empty .
   
-  ceq < M M', DS , PVS , DO > |= enabledTrans(t) = true if M' = inPlaces(t) . 
+  ceq < M , DS , PVS , DO > |= enabledTrans(t) = true if inPlaces(t) <= M . 
    
   ceq < M , DS , PVS , DO > |= predTrans(t) = true if isGuardTrue( PVS , G(t) ) .
   

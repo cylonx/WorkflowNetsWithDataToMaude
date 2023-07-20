@@ -63,37 +63,39 @@ fmod net-types is
 
   ceq M === M' = true if  M <= M' and M' <= M  . 
 
-  op changeValues : Set{PredValue} Set{Preds} ->  Set{PredValue} .
- 
-  
-  ops read write delete used needed : Transitions -> Set{Data} .
-  op outData : Set{Data} Transitions -> Set{Data} .
-  ops readOps writeOps deleteOps : Set{Data}-> Set{DataOp} .
-  op dataOps : Transitions -> Set{DataOp} .
- 
-  ops inPlaces outPlaces : Transitions -> Marking .
-  
-  op !_ : Preds -> Guards [ctor] . 
-  op G : Transitions -> Guards .
- 
-  op isGuardTrue : Set{PredValue}  Guards -> Bool .
+
   op trueGuard : -> Guards .
+  op !_ : Preds -> Guards [ctor] . 
+  op isGuardTrue : Set{PredValue}  Guards -> Bool .
+  op G : Transitions -> Guards .
+  op changeValues : Set{PredValue} Set{Preds} ->  Set{PredValue} .
   op vars : Preds -> Set{Data} .
-  
   op definedPreds : Set{Preds} Set{Data} -> Bool .
 
+  ops inPlaces outPlaces : Transitions -> Marking .
+  ops read write delete needed : Transitions -> Set{Data} .
+  ops readOps writeOps deleteOps : Set{Data}-> Set{DataOp} .
+  op dataOps : Transitions -> Set{DataOp} .
+  op outData : Set{Data} Transitions -> Set{Data} .
+
   var PVSet : Set{PredValue} .
-  var PV : PredValue .
   var b : Bool .
   var W : Preds . 
   var pn : Preds .
   var PSet : Set{Preds} .
   var DS : Set{Data} .
   var E : Data .
+  var t : Transitions .
 
   eq changeValues(empty , PSet) = empty .
   eq changeValues ((PVSet , { W : b } ), (PSet , W) ) = changeValues(PVSet,PSet) , { W : not b }  .
   eq changeValues (PVSet , PSet)  = PVSet [owise] .
+
+  eq definedPreds(empty,DS) = true .
+  eq definedPreds(W,DS) =  vars(W) subset DS .  
+  eq definedPreds ( (PSet , W) , DS) = definedPreds(PSet,DS) and definedPreds(W,DS) .
+
+  eq needed(t) = ( read(t) , delete(t) ) .
 
   eq readOps(empty) = empty .
   eq readOps ((DS , E)) = readOps(DS) , r(E) .
@@ -104,22 +106,19 @@ fmod net-types is
   eq deleteOps(empty) = empty .
   eq deleteOps ((DS , E)) = deleteOps(DS) , dl(E) .
 
-  var t : Transitions .
+ 
   eq dataOps(t) = readOps(read(t)), writeOps(write(t)) , deleteOps(delete(t)) .
 
   eq outData(DS , t) = (DS , write(t)) \ delete(t) .
-  eq needed(t) = ( read(t) , delete(t) ) .
+ 
   
-  var g : Guards .
   eq isGuardTrue (PVSet, trueGuard) = true .
   eq isGuardTrue((PVSet, {W : true}) , W) = true .
   eq isGuardTrue( (PVSet, {W : false}) , ! W) = true .
   eq isGuardTrue (PVSet, W) = false [owise] .  
 
  
-  eq definedPreds(empty,DS) = true .
-  eq definedPreds(W,DS) =  vars(W) subset DS .  
-  eq definedPreds ( (PSet , W) , DS) = definedPreds(PSet,DS) and definedPreds(W,DS) .
+  
 
   
   ops initConfig testConfig : -> Config .
