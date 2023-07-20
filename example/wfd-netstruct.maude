@@ -1,0 +1,78 @@
+fmod wfd-net-struct is 
+  including net-types .
+  
+  ops i o p1 p2 p3 p4 p5 p6 : -> Places  . 
+  ops aprv cscs ra rd rf rj rja sld vcs : -> Transitions .
+  ops a ld scs cr ad rn : -> Data .
+  
+  ops okData okC : ->  Preds .
+  
+  eq read(aprv) = a,scs,cr .
+  eq write(aprv) = ld,ad .
+  eq delete(aprv) = a,scs,cr .
+  eq inPlaces(aprv) = p5 .
+  eq outPlaces(aprv) = p6 .
+  eq G(aprv) = okData .
+  
+  eq read(cscs) = cr,ad .
+  eq write(cscs) = scs .
+  eq delete(cscs) = empty .
+  eq inPlaces(cscs) = p3 p4 .
+  eq outPlaces(cscs) = p5 .
+  eq G(cscs) = okC .
+  
+  eq read(ra) = a .
+  eq write(ra) = empty .
+  eq delete(ra) = empty .
+  eq inPlaces(ra) = i .
+  eq outPlaces(ra) = p1 p2 .
+  eq G(ra) = trueGuard .
+  
+  eq read(rd) = a .
+  eq write(rd) = ad .
+  eq delete(rd) = empty .
+  eq inPlaces(rd) = p1 .
+  eq outPlaces(rd) = p3 .
+  eq G(rd) = trueGuard .
+  
+  eq read(rf) = ld .
+  eq write(rf) = empty .
+  eq delete(rf) = empty .
+  eq inPlaces(rf) = p6 .
+  eq outPlaces(rf) = o .
+  eq G(rf) = trueGuard .
+  
+  eq read(rj) = a,scs,cr .
+  eq write(rj) = rn,ad .
+  eq delete(rj) = a,scs,cr .
+  eq inPlaces(rj) = p5 .
+  eq outPlaces(rj) = o .
+  eq G(rj) = ! okData .
+  
+  eq read(rja) = cr,a .
+  eq write(rja) = rn,ad .
+  eq delete(rja) = a,cr .
+  eq inPlaces(rja) = p3 p4 .
+  eq outPlaces(rja) = o .
+  eq G(rja) = ! okC .
+  
+  eq read(sld) = empty .
+  eq write(sld) = ld .
+  eq delete(sld) = empty .
+  eq inPlaces(sld) = p6 .
+  eq outPlaces(sld) = o .
+  eq G(sld) = trueGuard .
+  
+  eq read(vcs) = a .
+  eq write(vcs) = cr .
+  eq delete(vcs) = empty .
+  eq inPlaces(vcs) = p2 .
+  eq outPlaces(vcs) = p4 .
+  eq G(vcs) = trueGuard .
+  
+  eq vars(okData) = scs,cr .
+  eq vars(okC) = cr .
+  
+  eq initConfig = < i  , (a) , ({ okData : false },{ okC : false })  , empty > .
+
+endfm

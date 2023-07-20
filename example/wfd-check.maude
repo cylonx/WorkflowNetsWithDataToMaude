@@ -1,0 +1,72 @@
+mod wfd-check is 
+  including wfd-preds . 
+  including MODEL-CHECKER . 
+  including LTL-SIMPLIFIER . 
+  
+  ops notMissing notLost  access delwrite consistentData : Data -> Prop .
+  ops notRedundant notDangling : Data Set{Data} -> Prop .
+  ops strictTermination noTermination  : Set{Data} Set{Data} -> Prop .
+  ops fireable deadTransition : Transitions -> Prop .
+  op end  : -> Prop .
+  ops notWrittenBefore notReadBefore  notWrittenBeforeRead : Data Data -> Prop .
+  ops notUpdated notRead notDeleted notWritten : Data -> Prop .
+   
+  var t : Transitions .
+  vars x y : Data .
+  vars DS DS' : Set{Data} .
+  
+  
+  eq end = final(empty) .
+  
+  eq fireable (t) = enabledTrans(t) /\ predTrans(t) /\ availableData (needed(t)) .
+  
+  eq deadTransition(t) = [] ~ fireable(t) .
+
+  eq access (a) =  enabledTrans(aprv) \/ enabledTrans(ra) \/ enabledTrans(rd) \/ enabledTrans(rj) \/ enabledTrans(rja) \/ enabledTrans(vcs)  .
+  eq access (ld) =  enabledTrans(rf)  .
+  eq access (scs) =  enabledTrans(aprv) \/ enabledTrans(rj)  .
+  eq access (cr) =  enabledTrans(aprv) \/ enabledTrans(rj) \/ enabledTrans(rja)  .
+  eq access (ad) =  enabledTrans(cscs)  .
+  
+  eq delwrite(x) = written(x) \/ deleted(x) .
+
+  eq notRedundant(x , DS) = inData(x,DS) \/ [] ~( written(x) /\ O (~ read(x) U (end /\ ~ read(x)))) .
+  
+  eq notMissing(x) = [] ~( ~ availableData(x) /\ access(x) ) .
+  
+  eq notLost(x) = [] ~ ( (written(x) /\ ~ end) /\ O (~ read(x) U (delwrite(x) /\ ~ read(x))) ) .
+  
+  eq consistentData(a) = [] ~ ( concurrentlyFireable(rj,vcs) \/ concurrentlyFireable(rj,rd) \/ concurrentlyFireable(rj,rja) \/ concurrentlyFireable(rj,ra) 
+                               \/ concurrentlyFireable(rja,vcs) \/ concurrentlyFireable(rja,rd) \/ concurrentlyFireable(aprv,vcs) \/ concurrentlyFireable(aprv,rj)
+                               \/ concurrentlyFireable(aprv,rd) \/ concurrentlyFireable(aprv,rja) \/ concurrentlyFireable(aprv,ra) \/ concurrentlyFireable(rja,ra) ) .
+  eq consistentData(ld) = [] ~ ( concurrentlyFireable(sld,rf) \/ concurrentlyFireable(aprv,rf) \/ concurrentlyFireable(aprv,sld) ) .
+  eq consistentData(scs) = [] ~ ( concurrentlyFireable(aprv,rj) \/ concurrentlyFireable(aprv,cscs) \/ concurrentlyFireable(rj,cscs) ) .
+  eq consistentData(cr) = [] ~ ( concurrentlyFireable(rj,vcs) \/ concurrentlyFireable(rj,cscs) \/ concurrentlyFireable(rj,rja) \/ concurrentlyFireable(rja,vcs) \/ concurrentlyFireable(aprv,cscs) 
+                                \/ concurrentlyFireable(rja,cscs) \/ concurrentlyFireable(aprv,vcs) \/ concurrentlyFireable(aprv,rj) \/ concurrentlyFireable(vcs,cscs) \/ concurrentlyFireable(aprv,rja) ) .
+  eq consistentData(ad) = [] ~ ( concurrentlyFireable(rd,cscs) \/ concurrentlyFireable(rd,rja) \/ concurrentlyFireable(rj,cscs) \/ concurrentlyFireable(rj,rd) \/ concurrentlyFireable(rj,rja) 
+                                \/ concurrentlyFireable(aprv,cscs) \/ concurrentlyFireable(rja,cscs) \/ concurrentlyFireable(aprv,rj) \/ concurrentlyFireable(aprv,rd) \/ concurrentlyFireable(aprv,rja) ) .
+  eq consistentData(rn) = [] ~ ( concurrentlyFireable(rja,rj) ) .
+  
+  eq consistentData(x) = consistent [owise] .
+  
+  eq notDangling(x , DS) = inData(x,DS) \/ [] ~ (end /\ availableData(x)) .
+   
+  eq notWrittenBefore(x,y) = [] ~ (written(x) /\ written(y)) /\ ~ ( ~ written(y) U written(x) ) .
+  
+  eq notReadBefore(x,y) = [] ~ (read(x) /\ read(y)) /\ ~ (~ read(y) U read(x)) .
+  
+  eq notWrittenBeforeRead(x,y) =  ~ ( ~ read(y) U ( written(x) /\ ~ read(y) ) ).
+  
+  eq notUpdated (x) = [] ~ (read(x) /\ written(x)) .
+  
+  eq notRead (x) = [] ~ (read(x)) .
+  
+  eq notWritten (x) = [] ~ (written(x)) .
+  
+  eq notDeleted (x) = [] ~ (deleted(x)) .
+  
+  eq strictTermination (DS , DS') = <> (final(DS) /\ finalAny(DS')) .
+  
+  eq noTermination (DS , DS') = [] ~ (final(DS) /\ finalAny(DS')) .
+
+endm

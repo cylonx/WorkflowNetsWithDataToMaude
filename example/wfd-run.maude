@@ -1,0 +1,85 @@
+load wfd-nettypes.maude .
+load wfd-netstruct.maude .
+load wfd.maude .
+load model-checker .
+load wfd-pred.maude .
+load wfd-check.maude .
+
+set show stats off . 
+red in STRING : "Verify properties for net with optional final data: (ld,rn) and mandatory final data: (ad)" . 
+set show stats on . 
+set show command on .
+set show stats off . 
+red in STRING : "Check if data elements are not redundant" . 
+set show stats on . 
+red in wfd-check : modelCheck(initConfig, notRedundant(scs , (ad,ld,rn))) .
+red in wfd-check : modelCheck(initConfig, notRedundant(ad , (ad,ld,rn))) .
+red in wfd-check : modelCheck(initConfig, notRedundant(ld , (ad,ld,rn))) .
+red in wfd-check : modelCheck(initConfig, notRedundant(a , (ad,ld,rn))) .
+red in wfd-check : modelCheck(initConfig, notRedundant(rn , (ad,ld,rn))) .
+red in wfd-check : modelCheck(initConfig, notRedundant(cr , (ad,ld,rn))) .
+ 
+set show stats off . 
+red in STRING : "Check if data elements are not lost" . 
+set show stats on . 
+
+red in wfd-check : modelCheck(initConfig, notLost(scs)) . 
+red in wfd-check : modelCheck(initConfig, notLost(ad)) . 
+red in wfd-check : modelCheck(initConfig, notLost(ld)) . 
+red in wfd-check : modelCheck(initConfig, notLost(a)) . 
+red in wfd-check : modelCheck(initConfig, notLost(rn)) . 
+red in wfd-check : modelCheck(initConfig, notLost(cr)) . 
+
+set show stats off . 
+red in STRING : "Check if data elements are not missing" . 
+set show stats on . 
+red in wfd-check : modelCheck(initConfig, notMissing(scs)) . 
+ red in wfd-check : modelCheck(initConfig, notMissing(ad)) . 
+ red in wfd-check : modelCheck(initConfig, notMissing(ld)) . 
+ red in wfd-check : modelCheck(initConfig, notMissing(a)) . 
+ red in wfd-check : modelCheck(initConfig, notMissing(rn)) . 
+ red in wfd-check : modelCheck(initConfig, notMissing(cr)) . 
+ 
+set show stats off . 
+red in STRING : "Check if data elements are consistent" . 
+set show stats on . 
+red in wfd-check : modelCheck(initConfig, consistentData(scs)) . 
+red in wfd-check : modelCheck(initConfig, consistentData(ad)) . 
+red in wfd-check : modelCheck(initConfig, consistentData(ld)) . 
+red in wfd-check : modelCheck(initConfig, consistentData(a)) . 
+red in wfd-check : modelCheck(initConfig, consistentData(rn)) . 
+red in wfd-check : modelCheck(initConfig, consistentData(cr)) . 
+
+set show stats off . 
+red in STRING : "Check if data elements are not dangling" . 
+set show stats on . 
+red in wfd-check : modelCheck(initConfig, notDangling(scs , (ad,ld,rn))) .
+red in wfd-check : modelCheck(initConfig, notDangling(ad , (ad,ld,rn))) .
+red in wfd-check : modelCheck(initConfig, notDangling(ld , (ad,ld,rn))) .
+red in wfd-check : modelCheck(initConfig, notDangling(a , (ad,ld,rn))) .
+red in wfd-check : modelCheck(initConfig, notDangling(rn , (ad,ld,rn))) .
+red in wfd-check : modelCheck(initConfig, notDangling(cr , (ad,ld,rn))) .
+
+set show stats off . 
+red in STRING : "Check if transitions are dead " . 
+set show stats on . 
+red in wfd-check : modelCheck(initConfig, []~ fireable(aprv)) . 
+red in wfd-check : modelCheck(initConfig, []~ fireable(cscs)) . 
+red in wfd-check : modelCheck(initConfig, []~ fireable(ra)) . 
+red in wfd-check : modelCheck(initConfig, []~ fireable(rd)) . 
+red in wfd-check : modelCheck(initConfig, []~ fireable(rf)) . 
+red in wfd-check : modelCheck(initConfig, []~ fireable(rj)) . 
+red in wfd-check : modelCheck(initConfig, []~ fireable(rja)) . 
+red in wfd-check : modelCheck(initConfig, []~ fireable(sld)) . 
+red in wfd-check : modelCheck(initConfig, []~ fireable(vcs)) . 
+
+set show stats off . 
+red in STRING : "Check if  strict termination holds" . 
+set show stats on . 
+red in wfd-check : modelCheck(initConfig, strictTermination((ad), (ld,rn))) . 
+
+set show stats off . 
+red in STRING : "Check if the workflow never terminates" . 
+set show stats on . 
+red in wfd-check : modelCheck(initConfig, noTermination((ad), (ld,rn))) . 
+q

@@ -1,0 +1,44 @@
+mod wfd-preds is
+  protecting wfd .
+  including SATISFACTION .
+  subsort Config < State .
+  ops final finalAny availableData : Set{Data} -> Prop .
+  ops  predTrans  enabledTrans : Transitions -> Prop .
+  op concurrentlyFireable : Transitions Transitions -> Prop .
+  ops written read deleted : Data -> Prop .
+  op consistent : -> Prop .
+  op inData : Data Set{Data} -> Prop .
+  
+  vars M M' M'' : Marking .
+  vars DS DS' : Set{Data} .
+  var PVS : Set{PredValue} . 
+  var DO : Set{DataOp} .
+  var C : Config .
+  var P : Prop .
+  var x : Data .
+  vars t t' : Transitions . 
+  
+  eq C |= consistent = true .
+  ceq C |= inData(x,DS) = true if x in DS .
+  
+  --- final configuration with mandatory data elements
+  eq < o , (DS' , DS) , PVS , DO > |= final(DS) = true .
+  
+  --- final configuration with optional data elements
+  ceq < o , DS' , PVS , DO > |= finalAny(DS) = true if not intersection(DS,DS') == empty .
+  
+  ceq < M M', DS , PVS , DO > |= enabledTrans(t) = true if M' = inPlaces(t) . 
+   
+  ceq < M , DS , PVS , DO > |= predTrans(t) = true if isGuardTrue( PVS , G(t) ) .
+  
+  eq < M , (DS' , DS) , PVS , DO > |= availableData (DS) = true .
+  
+  ceq < M M' M'' , DS , PVS, DO  > |= concurrentlyFireable(t,t') = true if M' === inPlaces(t) and M'' === inPlaces(t')  and (needed(t) ,needed(t')) subset DS and  isGuardTrue(PVS, G(t)) and isGuardTrue(PVS, G(t')) .
+  
+  
+  eq < M , DS , PVS , (DO , w(x)) > |= written(x) = true .
+  eq < M , DS , PVS , (DO , r(x)) > |= read(x) = true .
+  eq < M , DS , PVS , (DO , dl(x)) > |= deleted(x) = true .
+  
+  eq C |= P = false [owise] .
+endm 

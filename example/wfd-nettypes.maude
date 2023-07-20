@@ -1,0 +1,129 @@
+fmod DATA is
+  sort Data .
+endfm
+
+fmod DATAOP is
+  protecting DATA .
+  sort DataOp .
+  ops w r dl :  Data -> DataOp [ctor] .
+endfm
+
+fmod PREDS is 
+ sort Preds .
+endfm
+
+fmod PREDVALUE is 
+  protecting PREDS .
+  protecting BOOL .
+  sort PredValue .
+  op {_:_} : Preds Bool -> PredValue [ctor] .
+endfm 
+
+
+view Data from TRIV to DATA is
+    sort Elt to Data .
+endv
+
+view DataOp from TRIV to DATAOP is
+    sort Elt to DataOp .
+endv
+
+view Preds from TRIV to PREDS is
+    sort Elt to Preds .
+endv
+
+view PredValue from TRIV to PREDVALUE is
+ sort Elt to PredValue .
+endv
+
+
+fmod net-types is 
+  protecting PREDS .
+  protecting PREDVALUE .
+  protecting DATA .
+  protecting SET{Data} .
+  protecting SET{Preds} .
+  protecting SET{PredValue} .
+  protecting SET{DataOp} . 
+  protecting BOOL .
+  
+  sorts Transitions Places Marking Config Guards .
+  subsort Places < Marking . 
+  subsort Preds < Guards .
+
+  op null  : -> Marking . 
+  op __ : Marking Marking -> Marking [ctor assoc comm id: null] . 
+  op _<=_ : Marking Marking -> Bool .
+  op _===_ : Marking Marking -> Bool .
+  var M  : Marking .
+  var M'  : Marking .
+  eq null <= M = true .
+  eq M <= M' M = true .
+  eq M <= M' = false [owise] .
+
+  ceq M === M' = true if  M <= M' and M' <= M  . 
+
+  op changeValues : Set{PredValue} Set{Preds} ->  Set{PredValue} .
+ 
+  
+  ops read write delete used needed : Transitions -> Set{Data} .
+  op outData : Set{Data} Transitions -> Set{Data} .
+  ops readOps writeOps deleteOps : Set{Data}-> Set{DataOp} .
+  op dataOps : Transitions -> Set{DataOp} .
+ 
+  ops inPlaces outPlaces : Transitions -> Marking .
+  
+  op !_ : Preds -> Guards [ctor] . 
+  op G : Transitions -> Guards .
+ 
+  op isGuardTrue : Set{PredValue}  Guards -> Bool .
+  op trueGuard : -> Guards .
+  op vars : Preds -> Set{Data} .
+  
+  op definedPreds : Set{Preds} Set{Data} -> Bool .
+
+  var PVSet : Set{PredValue} .
+  var PV : PredValue .
+  var b : Bool .
+  var W : Preds . 
+  var pn : Preds .
+  var PSet : Set{Preds} .
+  var DS : Set{Data} .
+  var E : Data .
+
+  eq changeValues(empty , PSet) = empty .
+  eq changeValues ((PVSet , { W : b } ), (PSet , W) ) = changeValues(PVSet,PSet) , { W : not b }  .
+  eq changeValues (PVSet , PSet)  = PVSet [owise] .
+
+  eq readOps(empty) = empty .
+  eq readOps ((DS , E)) = readOps(DS) , r(E) .
+
+  eq writeOps(empty) = empty .
+  eq writeOps ((DS , E)) = writeOps(DS) , w(E) .
+
+  eq deleteOps(empty) = empty .
+  eq deleteOps ((DS , E)) = deleteOps(DS) , dl(E) .
+
+  var t : Transitions .
+  eq dataOps(t) = readOps(read(t)), writeOps(write(t)) , deleteOps(delete(t)) .
+
+  eq outData(DS , t) = (DS , write(t)) \ delete(t) .
+  eq needed(t) = ( read(t) , delete(t) ) .
+  
+  var g : Guards .
+  eq isGuardTrue (PVSet, trueGuard) = true .
+  eq isGuardTrue((PVSet, {W : true}) , W) = true .
+  eq isGuardTrue( (PVSet, {W : false}) , ! W) = true .
+  eq isGuardTrue (PVSet, W) = false [owise] .  
+
+ 
+  eq definedPreds(empty,DS) = true .
+  eq definedPreds(W,DS) =  vars(W) subset DS .  
+  eq definedPreds ( (PSet , W) , DS) = definedPreds(PSet,DS) and definedPreds(W,DS) .
+
+  
+  ops initConfig testConfig : -> Config .
+  op <_,_,_,_> : Marking Set{Data} Set{PredValue} Set{DataOp} -> Config [ctor] .
+
+
+endfm

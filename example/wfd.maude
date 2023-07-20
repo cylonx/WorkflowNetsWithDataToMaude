@@ -1,0 +1,37 @@
+mod wfd is 
+    including net-types .  
+    including wfd-net-struct .  
+   
+    var M  : Marking .
+    var p : Places .
+    var DS : Set{Data} .
+    var PS : Set{PredValue} .
+    var DO : Set{DataOp} .
+    var b : Bool .
+crl [aprv-1] : < M p5 , DS  , PV , DO > => < M outPlaces(aprv) , outData(DS , aprv) , changeValues(PV , empty) , dataOps(aprv) > 
+               if definedPreds(empty, outData(DS ,aprv)) and needed(aprv) subset DS and isGuardTrue(PV , G(aprv)) .
+crl [cscs-1] : < M p3 p4 , DS  , PV , DO > => < M outPlaces(cscs) , outData(DS , cscs) , changeValues(PV , (okData)) , dataOps(cscs) > 
+             if definedPreds((okData), outData(DS ,cscs)) and needed(cscs) subset DS and isGuardTrue(PV , G(cscs)) .
+crl [cscs-2] : < M p3 p4 , DS  , PV , DO > => < M outPlaces(cscs) , outData(DS , cscs) , changeValues(PV , empty) , dataOps(cscs) > 
+             if definedPreds(empty, outData(DS ,cscs)) and needed(cscs) subset DS and isGuardTrue(PV , G(cscs)) .
+crl [ra-1] : < M i , DS  , PV , DO > => < M outPlaces(ra) , outData(DS , ra) , changeValues(PV , empty) , dataOps(ra) >
+             if definedPreds(empty, outData(DS ,ra)) and needed(ra) subset DS and isGuardTrue(PV , G(ra)) .
+crl [rd-1] : < M p1 , DS  , PV , DO > => < M outPlaces(rd) , outData(DS , rd) , changeValues(PV , empty) , dataOps(rd) >
+             if definedPreds(empty, outData(DS ,rd)) and needed(rd) subset DS and isGuardTrue(PV , G(rd)) .
+crl [rf-1] : < M p6 , DS  , PV , DO > => < M outPlaces(rf) , outData(DS , rf) , changeValues(PV , empty) , dataOps(rf) > 
+             if definedPreds(empty, outData(DS ,rf)) and needed(rf) subset DS and isGuardTrue(PV , G(rf)) .
+crl [rj-1] : < M p5 , DS  , PV , DO > => < M outPlaces(rj) , outData(DS , rj) , changeValues(PV , empty) , dataOps(rj) > 
+             if definedPreds(empty, outData(DS ,rj)) and needed(rj) subset DS and isGuardTrue(PV , G(rj)) .
+crl [rja-1] : < M p3 p4 , DS  , PV , DO > => < M outPlaces(rja) , outData(DS , rja) , changeValues(PV , empty) , dataOps(rja) > 
+             if definedPreds(empty, outData(DS ,rja)) and needed(rja) subset DS and isGuardTrue(PV , G(rja)) .
+crl [sld-1] : < M p6 , DS  , PV , DO > => < M outPlaces(sld) , outData(DS , sld) , changeValues(PV , empty) , dataOps(sld) > 
+             if definedPreds(empty, outData(DS ,sld)) and needed(sld) subset DS and isGuardTrue(PV , G(sld)) .
+crl [vcs-1] : < M p2 , DS  , PV , DO > => < M outPlaces(vcs) , outData(DS , vcs) , changeValues(PV , (okData)) , dataOps(vcs) > 
+             if definedPreds((okData), outData(DS ,vcs)) and needed(vcs) subset DS and isGuardTrue(PV , G(vcs)) .
+crl [vcs-2] : < M p2 , DS  , PV , DO > => < M outPlaces(vcs) , outData(DS , vcs) , changeValues(PV , (okC)) , dataOps(vcs) > 
+             if definedPreds((okC), outData(DS ,vcs)) and needed(vcs) subset DS and isGuardTrue(PV , G(vcs)) .
+crl [vcs-3] : < M p2 , DS  , PV , DO > => < M outPlaces(vcs) , outData(DS , vcs) , changeValues(PV , (okData,okC)) , dataOps(vcs) > 
+             if definedPreds((okData,okC), outData(DS ,vcs)) and needed(vcs) subset DS and isGuardTrue(PV , G(vcs)) .
+crl [vcs-4] : < M p2 , DS  , PV , DO > => < M outPlaces(vcs) , outData(DS , vcs) , changeValues(PV , empty) , dataOps(vcs) > 
+             if definedPreds(empty, outData(DS ,vcs)) and needed(vcs) subset DS and isGuardTrue(PV , G(vcs)) . 
+endm
