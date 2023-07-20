@@ -1,4 +1,4 @@
-This repository contains information and code related to an example that showcases the specification of Workflow Nets with Data in Maude.
+This repository contains information and code related to an example that demonstrates the specification of Workflow Nets with Data in Maude.
 
 The structure of the repo is as follows:
 * /example : contains the example files:
