@@ -1,7 +1,6 @@
 ![Alt text](/Img/wfd.png?raw=true "Title")
 
-The example depicts a WFD-net modelling the pthe processing of an ap-
-plication for a student loan
+The example depicts a WFD-net modelling the processing of an application for a student loan
 
 The data elements involved are: D = {a, ad, scs, cr, rn, ld}. 
 
