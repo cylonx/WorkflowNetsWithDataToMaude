@@ -5,7 +5,7 @@ mod wfd is
     var M  : Marking .
     var p : Places .
     var DS : Set{Data} .
-    var PS : Set{PredValue} .
+    var PV : Set{PredValue} .
     var DO : Set{DataOp} .
     var b : Bool .
 crl [aprv-1] : < M p5 , DS  , PV , DO > => < M outPlaces(aprv) , outData(DS , aprv) , changeValues(PV , empty) , dataOps(aprv) > 
