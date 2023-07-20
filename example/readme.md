@@ -1,4 +1,4 @@
-![Alt text](Img/wfd.png?raw=true "Title")
+![Alt text](/Img/wfd.png?raw=true "Title")
 
 The example depicts a WFD-net modelling the pthe processing of an ap-
 plication for a student loan
