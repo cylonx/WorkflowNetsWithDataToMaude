@@ -74,12 +74,13 @@ red in wfd-check : modelCheck(initConfig, []~ fireable(sld)) .
 red in wfd-check : modelCheck(initConfig, []~ fireable(vcs)) . 
 
 set show stats off . 
-red in STRING : "Check if  strict termination holds" . 
+red in STRING : "Check if  termination for easy soundness holds" . 
 set show stats on . 
-red in wfd-check : modelCheck(initConfig, strictTermination((ad), (ld,rn))) . 
+reduce in wfd-check : modelCheck(initConfig, <> (final(ad) /\ (final(rn) \/ final(ld) ) ) ) .
+
 
 set show stats off . 
 red in STRING : "Check if the workflow never terminates" . 
 set show stats on . 
-red in wfd-check : modelCheck(initConfig, noTermination((ad), (ld,rn))) . 
+reduce in wfd-check : modelCheck(initConfig, [] ~ (final(ad) /\ (final(rn) \/ final(ld) ) ) ) .
 q

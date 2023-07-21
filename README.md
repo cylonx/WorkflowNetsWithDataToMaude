@@ -11,6 +11,6 @@ The structure of the repo is as follows:
   * [lisiting.txt](/example/listing.txt) : contains a listing of the results obtained by running the commands in wfd-run
 
 
-In order to run the verification procedure for the example, cd the example directory and load  wfd-run.maude 
+In order to run the verification procedure for the example, load  example/wfd-run.maude 
 
 
