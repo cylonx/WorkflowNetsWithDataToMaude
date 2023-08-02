@@ -60,9 +60,16 @@ fmod net-types is
   eq null <= M = true .
   eq M <= M' M = true .
   eq M <= M' = false [owise] .
-
   ceq M === M' = true if  M <= M' and M' <= M  . 
 
+  var PVSet : Set{PredValue} .
+  var b : Bool .
+  var W : Preds . 
+  var pn : Preds .
+  var PSet : Set{Preds} .
+  var DS : Set{Data} .
+  var E : Data .
+  var t : Transitions .
 
   op trueGuard : -> Guards .
   op !_ : Preds -> Guards [ctor] . 
@@ -78,14 +85,10 @@ fmod net-types is
   op dataOps : Transitions -> Set{DataOp} .
   op outData : Set{Data} Transitions -> Set{Data} .
 
-  var PVSet : Set{PredValue} .
-  var b : Bool .
-  var W : Preds . 
-  var pn : Preds .
-  var PSet : Set{Preds} .
-  var DS : Set{Data} .
-  var E : Data .
-  var t : Transitions .
+  eq isGuardTrue (PVSet, trueGuard) = true .
+  eq isGuardTrue((PVSet, {W : true}) , W) = true .
+  eq isGuardTrue( (PVSet, {W : false}) , ! W) = true .
+  eq isGuardTrue (PVSet, W) = false [owise] .  
 
   eq changeValues(empty , PSet) = empty .
   eq changeValues ((PVSet , { W : b } ), (PSet , W) ) = changeValues(PVSet,PSet) , { W : not b }  .
@@ -110,10 +113,7 @@ fmod net-types is
 
   eq outData(DS , t) = (DS , write(t)) \ delete(t) .
  
-  eq isGuardTrue (PVSet, trueGuard) = true .
-  eq isGuardTrue((PVSet, {W : true}) , W) = true .
-  eq isGuardTrue( (PVSet, {W : false}) , ! W) = true .
-  eq isGuardTrue (PVSet, W) = false [owise] .  
+ 
 
   ops initConfig testConfig : -> Config .
   op <_,_,_,_> : Marking Set{Data} Set{PredValue} Set{DataOp} -> Config [ctor] .
