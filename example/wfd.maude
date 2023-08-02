@@ -1,7 +1,6 @@
 mod wfd is 
     including net-types .  
-    including wfd-net-struct .  
-   
+ 
     var M  : Marking .
     var p : Places .
     var DS : Set{Data} .
