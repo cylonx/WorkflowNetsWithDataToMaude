@@ -112,11 +112,9 @@ fmod net-types is
   eq dataOps(t) = readOps(read(t)), writeOps(write(t)) , deleteOps(delete(t)) .
 
   eq outData(DS , t) = (DS , write(t)) \ delete(t) .
- 
- 
 
-  ops initConfig testConfig : -> Config .
   op <_,_,_,_> : Marking Set{Data} Set{PredValue} Set{DataOp} -> Config [ctor] .
+  op initConfig  : -> Config .
 
 
 endfm
